@@ -23,20 +23,28 @@ function plugin(opts){
 		var data = files[file];
 		if (!data.mathjax) return done();
 		debug("Found mathjax in", file);
-		var document = jsdom(data.contents.toString());
-		mjAPI.start();
+		var document = jsdom({
+			html: data.contents.toString(),
+			scripts: [ "https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js" ],
+			onload: function() {
+				debug(document);
 
-		mjAPI.typeset({
-		  html: document.body.innerHTML,
-		  renderer: "SVG",
-		  inputs: ["TeX"]
-		}, function(result) {
-		  document.body.innerHTML = result.html;
-		  var HTML = "<!DOCTYPE html>\n" + document.documentElement.outerHTML.replace(/^(\n|\s)*/, "");
-		  data.contents = new Buffer(HTML);
-	      debug('Prerendered MathJAX for file: %s', file);
-		  done();
-		});			
+				mjAPI.start();
+
+				mjAPI.typeset({
+				  html: document.body.innerHTML,
+				  renderer: "SVG",
+				  inputs: ["TeX"]
+				}, function(result) {
+				  document.body.innerHTML = result.html;
+				  var HTML = "<!DOCTYPE html>\n" + document.documentElement.outerHTML.replace(/^(\n|\s)*/, "");
+				  data.contents = new Buffer(HTML);
+			      debug('Prerendered MathJAX for file: %s', file);
+				  done();
+				});			
+
+			}
+		});
     }
   };
 }
