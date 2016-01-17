@@ -1,7 +1,7 @@
 var mjAPI = require("./node_modules/mathjax-node/lib/mj-page.js");
-var jsdom = require("jsdom").jsdom;
+var jsdom = require("jsdom");
 var debug = require('debug')('metalsmith-mathjax');
-var each = require('async').each;
+var async = require('async');
 
 /**
  * Expose `plugin`.
@@ -15,36 +15,43 @@ module.exports = plugin;
  * @return {Function}
  */
 
-function plugin(opts){
-  return function(files, metalsmith, done) {
-    each(Object.keys(files), prerender, done);
+function plugin(opts) {
+    return function(files, metalsmith, done) {
+        async.eachSeries(Object.keys(files), prerender, done);
 
-    function prerender(file, done) {
-		var data = files[file];
-		if (!data.mathjax) return done();
-		debug("Found mathjax in", file);
-		var document = jsdom({
-			html: data.contents.toString(),
-			scripts: [ "https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js" ],
-			onload: function() {
-				debug(document);
+        function prerender(file, done) {
+            var data = files[file];
+            if (!data.mathjax) {
+                done();
+            } else {
+                debug("Found mathjax in", file);
+                var contents = data.contents.toString('utf8');
 
-				mjAPI.start();
+                jsdom.env({
+                    html: contents,
+                    scripts: ["https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"],
+                    done: function(err, window) {
+                        if (err) {
+                        	console.log("We have an error");
+                            throw(err);
+                        }
+                        window.document.$ = window.$;
+                        mjAPI.start();
 
-				mjAPI.typeset({
-				  html: document.body.innerHTML,
-				  renderer: "SVG",
-				  inputs: ["TeX"]
-				}, function(result) {
-				  document.body.innerHTML = result.html;
-				  var HTML = "<!DOCTYPE html>\n" + document.documentElement.outerHTML.replace(/^(\n|\s)*/, "");
-				  data.contents = new Buffer(HTML);
-			      debug('Prerendered MathJAX for file: %s', file);
-				  done();
-				});			
-
-			}
-		});
-    }
-  };
+                        mjAPI.typeset({
+                            html: window.document.body.innerHTML,
+                            renderer: "SVG",
+                            inputs: ["TeX"]
+                        }, function(result) {
+                            window.document.body.innerHTML = result.html;
+                            var HTML = "<!DOCTYPE html>\n" + window.document.documentElement.outerHTML.replace(/^(\n|\s)*/, "");
+                            data.contents = new Buffer(HTML);
+                            debug('Prerendered MathJAX for file: %s', file);
+                            done();
+                        });
+                    }
+                });
+            }
+        };
+    };
 }
