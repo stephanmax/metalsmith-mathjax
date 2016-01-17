@@ -29,13 +29,11 @@ function plugin(opts) {
 
                 jsdom.env({
                     html: contents,
-                    scripts: ["https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"],
                     done: function(err, window) {
                         if (err) {
                         	console.log("We have an error");
                             throw(err);
                         }
-                        window.document.$ = window.$;
                         mjAPI.start();
 
                         mjAPI.typeset({
