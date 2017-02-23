@@ -1,4 +1,5 @@
-var mjAPI = require("./node_modules/mathjax-node/lib/mj-page.js");
+//var mjAPI = require("./node_modules/mathjax-node/lib/mj-page.js");
+var mjAPI = require("mathjax-node");
 var jsdom = require("jsdom");
 var debug = require('debug')('metalsmith-mathjax');
 var async = require('async');
