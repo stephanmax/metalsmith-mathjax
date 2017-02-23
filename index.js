@@ -1,4 +1,4 @@
-var mjAPI = require("./node_modules/mathjax-node/lib/mj-page.js");
+var mjAPI = require("mathjax-node/lib/mj-page.js");
 var jsdom = require("jsdom");
 var debug = require('debug')('metalsmith-mathjax');
 var async = require('async');
@@ -32,7 +32,7 @@ function plugin(opts) {
                     done: function(err, window) {
                         if (err) {
                         	console.log("We have an error");
-                            throw(err);
+                          throw(err);
                         }
                         mjAPI.start();
 
