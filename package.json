@@ -1,6 +1,6 @@
 {
   "name": "metalsmith-mathjax",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Prerender MathJAX during metalsmith build",
   "main": "index.js",
   "scripts": {
