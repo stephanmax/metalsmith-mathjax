@@ -4,6 +4,8 @@ logs
 
 .DS_Store
 
+pnpm-lock.yaml
+
 # Runtime data
 pids
 *.pid

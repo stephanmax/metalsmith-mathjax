@@ -1,6 +1,6 @@
 {
   "name": "metalsmith-mathjax",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Prerender MathJAX during metalsmith build",
   "main": "index.js",
   "scripts": {
@@ -13,10 +13,10 @@
   "author": "Chris Wilson",
   "license": "MIT",
   "dependencies": {
-    "async": "^2.0.1",
-    "debug": "^2.2.0",
-    "jsdom": "^9.4.2",
-    "mathjax-node": "^1.0.0-beta.0",
+    "async": "^3.1.0",
+    "debug": "^4.1.1",
+    "jsdom": "^15.1.1",
+    "mathjax-node": "^2.1.1",
     "mathjax-node-page": "github:pkra/mathjax-node-page"
   },
   "devDependencies": {},
